@@ -1,11 +1,64 @@
-<?php
-include ('../config.php');
+﻿<?php include ('../config.php');
 session_start();
-// $user=$_SESSION['user_name'];
-$sql="select * from registration where username='".$_SESSION['user_name']."'";
-$rs= mysqli_query($conn,$sql);
+$cid=$_SESSION['cid'];
+if(isset($_POST['submit']))
+{
+	$cid=$_SESSION['cid'];
+	$wname=$_POST['wname'];
+	$waddress=$_POST['waddress'];
+	$wphonenumber=$_POST['wphonenumber'];
+	$wdob=$_POST['wdob'];
+	$wgender=$_POST['wgender'];
+	$wcity=$_POST['wcity'];
+    $workertype=$_POST['workertype'];
+	//$cfile=addcslashes(file_get_contents($_FILES["image"]["tmp_name"]));
+	$wusername=$_POST['wusername'];
+	$wpassword=$_POST['wpassword'];
+	// $pass=md5($wpassword);
+	$wcpassword=$_POST['wcpassword'];
+                               
+    $select="SELECT * from worker WHERE wusername='$wusername' ";
+	$result= mysqli_query($conn,$select);
+	if(mysqli_num_rows($result)> 0 )
+	{
+		echo '<script type="text/javascript">';
+   			echo ' alert("contractor alery exist")';
+			echo '</script>';
+		// $error[]='user already exist';
+	}else{
+		if ($wpassword != $wcpassword)
+		{
+			echo '<script type="text/javascript">';
+   			echo ' alert("password does not match")';
+			echo '</script>';
 
+		}else   
+		{
+			if($wpassword != "")
+			{
+				$pass=md5($wpassword);
+		$sql="INSERT INTO worker(cid,wname, waddress, wphonenumber,  wdob, wgender, wcity,workertype,wusertype,wusername, wpassword, status) VALUES ('$cid','$wname','$waddress','$wphonenumber','$wdob','$wgender','$wcity','$workertype','worker', '$wusername','$pass','approved')";
+		$result=mysqli_query($conn,$sql);
+		 if($result)
+		 {
+			echo '<script type="text/javascript">';
+   			echo ' alert("Sucsessfully added new worker")';
+			echo '</script>';
+		 }
+		 else{
+			echo ' alert("failed")';
+		 }
+		}
+		
+	}
+
+	
+};
+
+  }
+  
 ?>
+
 <!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
@@ -16,59 +69,21 @@ $rs= mysqli_query($conn,$sql);
     <link href="assets/css/bootstrap.css" rel="stylesheet" />
      <!-- FONTAWESOME STYLES-->
     <link href="assets/css/font-awesome.css" rel="stylesheet" />
-     <!-- MORRIS CHART STYLES-->
-    <link href="assets/js/morris/morris-0.4.3.min.css" rel="stylesheet" />
         <!-- CUSTOM STYLES-->
     <link href="assets/css/custom.css" rel="stylesheet" />
      <!-- GOOGLE FONTS-->
    <link href='http://fonts.googleapis.com/css?family=Open+Sans' rel='stylesheet' type='text/css' />
 </head>
-<body>
-<style>
-  input[type=text], select {
-  width: 100%;
-  padding: 12px 20px;
-  margin: 8px 0;
-  display: inline-block;
-  border: 1px solid #ccc;
-  border-radius: 4px;
-  box-sizing: border-box;
-}
-textarea, select
- {
-  width: 100%;
-  padding: 12px 20px;
-  margin: 8px 0;
-  display: inline-block;
-  border: 1px solid #ccc;
-  border-radius: 4px;
-  box-sizing: border-box;
-}
-input[type=date], select
- {
-  width: 100%;
-  padding: 12px 20px;
-  margin: 8px 0;
-  display: inline-block;
-  border: 1px solid #ccc;
-  border-radius: 4px;
-  box-sizing: border-box;
-}
-input[type=submit]
- {
+<body><style>
+	input[type=submit] {
   width: 100%;
   background-color: #4CAF50;
   color: white;
-  padding: 14px 20px;
+  padding: 14px 25px;
   margin: 8px 0;
   border: none;
   border-radius: 4px;
   cursor: pointer;
-}
-
-input[type=submit]:hover
- {
-  background-color: #45a049;
 }
 </style>
     <div id="wrapper">
@@ -80,13 +95,13 @@ input[type=submit]:hover
                     <span class="icon-bar"></span>
                     <span class="icon-bar"></span>
                 </button>
-                <a class="navbar-brand" href="index.html">DREAM HOME </a> 
+                <a class="navbar-brand" href="index.html"> DREAM HOME</a> 
             </div>
   <div style="color: white;
 padding: 15px 50px 5px 50px;
 float: right;
-font-size: 16px;">  <?php
-                                                echo $_SESSION['user_name'];
+font-size: 16px;"> <?php
+                                                echo $_SESSION['c_name'];
 
                       ?><a href="../login/logout.php" class="btn btn-danger square-btn-adjust">Logout</a> </div>
         </nav>   
@@ -98,37 +113,49 @@ font-size: 16px;">  <?php
                     <img src="assets/img/find_user.png" class="user-image img-responsive"/>
 					</li>
 				
-					
-                    <li>
-                        <a  href="index.php"><i class="fa fa-home fa-3x"></i> Dashboard</a>
+					<li>
+                        <a   href="index.php"><i class="fa fa-home fa-3x"></i> Dashboard</a>
                     </li>
-                    <li>
-                        <a  href="profile.php"><i class="fa fa-user fa-3x"></i> Profile</a>
-                    </li>
-                    <li>
-                        <a  href="pdfg.php"><i class="fa fa-bar-chart-o fa-3x"></i>floor plan</a>
+                     <li>
+                        <a  href="profile.php"><i class="fa fa-user fa-3x"></i>Profile</a>
                     </li>
                     <li>
                         <a  href="changepasssw.php"><i class="fa fa-qrcode fa-3x"></i> change password</a>
                     </li>
-                    <li  >
-                        <a  class="active-menu" href="workers.php"><i class="fa fa-bar-chart-o fa-3x"></i> Workers </a>
                     </li>
-                  
-						   <li  >
-                        <a   href="builders.php"><i class="fa fa-user fa-3x"></i>Builders</a>\ <ul class="nav nav-second-level">
+					 <li >
+                        <a class="active-menu" href="workers.php"><i class="fa fa-bar-chart-o fa-3x"></i>Add Workers</a>
+                    </li>	
+                    
+                    <li  >
+                        <a    href="#"><i class="fa fa-user fa-3x"></i>Leave Update</a>\ <ul class="nav nav-second-level">
                         <li>
-                                <a href="builders.php">Builders</a>
+                                <a  href="viewleave.php">Approve Leave</a>
                             </li>
                              <li>
-                                <a href="pending.php">Status</a>
+                                <a href="lapproval.php">Pending</a>
                             </li>
-                            
+                            <li>
+                                <a href="lreject.php">reject</a>
+                            </li>
+							</ul>
+                         </li>
+                      <li  >
+                        <a    href="#"><i class="fa fa-user fa-3x"></i>Updates</a>\ <ul class="nav nav-second-level">
+                        <li>
+                                <a  href="viewreq.php">View Request</a>
+                            </li>
+                             <li>
+                                <a href="assignwc.php">assign workers</a>
+                            </li>
+                            <li>
+                                <a href="lreject.php">pending projects</a>
+                            </li>
                        
-                        </ul>
+                        
                       </li>  	
 					
-			
+                      
                 </ul>
                
             </div>
@@ -139,115 +166,207 @@ font-size: 16px;">  <?php
             <div id="page-inner">
                 <div class="row">
                     <div class="col-md-12">
-                     <h2>PROFILE </h2>   
-                        <h5>Welcome user, Love to see you back. </h5>
+                     <h2>ADD Workers </h2>   
+                        <h5>Welcome Contractor , Love to see you back. </h5>
                        
                     </div>
                 </div>
                  <!-- /. ROW  -->
                  <hr />
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/all.min.css">
+				 <form method="POST">
+			<section class="ftco-section">
+				<div class="container">
+					<div class="row justify-content-center">
+						<div class="col-md-6 text-center mb-5">
+							<h4 class="heading-section">WORKERS REGISTRATION </h4>
+						</div>
+					</div>
+					<div class="row justify-content-center">
+						<div class="col-lg-10">
+							<div class="wrap d-md-flex">
+								<div class="text-wrap p-4 p-lg-5 d-flex img d-flex align-items-end" style="background-image: url(images/bg1.jpg);">
+									<div class="text w-100">
+									
+									</div>
+						  </div>
+								<div class="login-wrap p-4 p-md-5">
+									<form action="#" class="signup-form" onclick="return validation()">
+										<div class="row">
+											<div class="col-md-12">
+												<div class="form-group d-flex align-items-center">
+												<label>Worker Name</label>
+											  		<label class="label" for="name">Worker  Name</label>
+											  		<input type="text" class="form-control" name="wname" id="wname" placeholder="worker Name" autocomplete="off" required>	
+										  		</div>
+												</div>
+										</div>
+										<div class="row">
+											<span id="fullname" style="color:red;"> </span>
+										</div>
+											<div class="row">
+												<div class="col-md-12">
+													<div class="form-group d-flex align-items-center">
+													<label>Worker Address</label>
+												  		<label class="label" for="name">Worker Address</label>
+												  		<textarea class="form-control" placeholder=" Worker Address" rows="5" id="waddress" name="waddress" required
+														  required pattern="[a-zA-Z]{3,30}"  
+															oninvalid="setCustomValidity('fill address !!')" 
+															oninput="setCustomValidity('')"></textarea>
+											  		</div>
+												</div>
+												<div class="row">
+													<span id="adress1" style="color:red;"> </span>
+												</div>
+												<div class="col-md-12">
+													<div class="form-group d-flex align-items-center">
+													<label>Phone Number</label>
+												  		<label class="label" for="name">Phone Number</label>
+												  		<input type="text" class="form-control" placeholder="Phone Number" id="wphonenumber" name="wphonenumber"
+														  pattern="[0-9]{3}[0-9]{3}[0-9]{4}"
+														oninvalid="setCustomValidity('fill phoneno !!')"  
+															oninput="setCustomValidity('')"
+															 maxlength="30"> 
+											  		</div>
+												</div>
+												<div class="row">
+													<span id="phoneno" style="color:red;"> </span>
+												</div>
 
+												<div class="row">
+													
+												</div>
+												<div class="col-md-12">
+													<div class="form-group d-flex align-items-center">
+													<label>Date Of Birth</label>
+											  			<label class="label" for="name">Date of Birth</label>
+											  			<input type="date" class="form-control" placeholder="Date" id="wdob" name="wdob" style="width:100%" required>
+										  			</div>
+												</div>
+												<div class="row">
+													<span id="date1" style="color:red;"> </span>
+												</div>
+												<div class="col-md-12">
+													<div class="form-group d-flex align-items-center"><label>Gender<label>
+												  		<label class="label" for="name">Gender &nbsp;&nbsp;&nbsp;&nbsp;</label> 
+													  <input type="radio"  name="wgender" value="male" id="wgender" style="size:20%;" required/>Male  &nbsp;  
+													  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<input type="radio"  name="wgender" value="female" id="wgender"required/>Female    
+												    </div>
+                                                 </div>
+											</div>
+											<div class="col-md-12">
+													<div class="form-group d-flex align-items-center">
+													<label>City</label>
+												  		<label class="label" for="name">City &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</label>
+											  			<select name="wcity" class="form-control" id="wcity" required>
+														  <option value="" disabled selected>Select your City</option>
+															<option value="Alappuzha">Alappuzha</option>
+															<option value="Cherthala">Cherthala</option>
+															<option value="Kottayam">Kottayam</option>
+															<option value="Kanjirapally">Kanjirapally</option>
+															<option value="Kanjikuzhi">Kanjikuzhi</option>
+															<option value="Kalavoor">Kalavoor</option>
+															<option value="Kuttanad">Kuttanad</option>
 
+											  			</select>
+										 			 </div>
+												</div>
+												<div class="col-md-12">
+												<div class="row">
+													<div class="form-group d-flex align-items-center">
+													<label>Worker Type</label>
+												  		<label class="label" for="name">Worker Type &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</label>
+											  			<select name="workertype" class="form-control" id="workertype" required>
+														  <option value="" disabled selected>Select workers type</option>
+															<option value="Plumber">Plumber</option>
+															<option value="Electtrician">Electrician</option>
+															<option value="Painter">Painter</option>
+															<option value="Decorator">Decorator</option>
+															<option value="Labourer"> Labourer</option>
 
+											  			</select>
+										 			 </div>
+												</div>
+												<!-- <div class="col-md-12">
+														<div class="form-group d-flex align-items-center">
+														<label class="label" for="image">image &nbsp;&nbsp;&nbsp;</label>
+									  					<input type="file" class="form-control" placeholder="Image" id="cfile" name="cfile">
+														</div>
+													</div> -->
 
-        <?php
-        //  $wid=$_SESSION['wid'];
-                         
-                                       if(isset($_SESSION['status']))
-                                       {
-                                           ?>
-                                          <div class="alert alert-success" role="alert">
-        
-       
-                                 <?php echo $_SESSION['status'] ; ?>
+													<div class="col-md-12">
+													<div class="row">
+												
+													<div class="form-group d-flex align-items-center">
+													<label>UserName</label>
+											  			<label class="label" for="website">Username</label>
+											  			<input type="text" class="form-control" placeholder="Username" id="wusername" name="wusername" required>
+										 			 </div>
+													  <div class="row">
+														<span id="username1" style="color:red;"> </span>
+													</div>
+													
+													<div class="col-md-12">
+													<div class="row">
+														<div class="form-group d-flex align-items-center">
+														<label> Password</label>
+															<label class="label" for="password">Password &nbsp;&nbsp;&nbsp;</label>
+									  						<input type="password" class="form-control" placeholder="Password" id="wpassword" name="wpassword" required>
+														</div>
+													</div>
+													<div class="col-md-15">
+													<div class="row">
+														<div class="form-group d-flex align-items-center">
+														<label>Conform Password</label>
+															<label class="label" for="password">Conform Password</label>
+									  						<input type="password" class="form-control" placeholder="Conform Password" id="wcpassword" name="wcpassword" required>
+														</div>
+													</div>
+												
+											
+												</div>
+												<div class="col-md-12 my-4">
+													<div class="form-group">
+														<div class="w-100">
+															<label class="checkbox-wrap checkbox-primary">I agree all statements in terms of service
+														 	<input type="checkbox" checked>
+														    <span class="checkmark"></span>
+    </label>
+												</div>
+												</div>
+                                                  </div>
+												<div class="col-md-12">
+													<div class="form-group">
+														<input type="submit" class="btn btn-secondary submit p-3" value="Create an account" id="btn" name="submit">
+													</div>
+												
+											</div>
+										</div>
+										<a href="../">Back to Home</a>
+									</form>	
+						  
+						</div>
+						<a href="../">Back to Home</a>
+					  </div>
+						</div>
+					</div>
+				</div>
+			</section>
+</form>
+		
+						  
+						</div>
+						
+					  </div>
+						</div>
+					</div>
+				</div>
+			</section>
+</form>
                                  
-                                    </div>
-                                           <?php
-                                           
-                                           unset($_SESSION['status']);
-                                       }
-          
-                                       ?>
-  	    <div class="well1 white">
-        <form class="form-floating ng-pristine ng-invalid ng-invalid-required ng-valid-email ng-valid-url ng-valid-pattern"  action="workeraction.php" method="POST">
-          <fieldset>
-            <?php
-        $query="SELECT wname,workertype from worker";
-        $result = mysqli_query($conn, $query);
-        ?>
-        <form action="" method="POST" class="list">
-        <div class="form-group"><br>
-              <label class="control-label">Worker</label> 
-                <select class="form-control" id="contractor" name="contractor">
-                    <option>-- select --</option>
-                        <?php
-                            while ($row = mysqli_fetch_assoc($result))
-                        {
-                        ?>
-                        
-                    <option value="<?php echo $row['wname'];?>"><?php echo $row['wname'];?>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Worktype : <?php echo $row['workertype'];?></option>
-                    
-                    <?php
-                        
-                        }
-                ?>
-        </select>
-        </div>
-  
+           
+                    <!-- /. ROW  -->
 
-            <div class="form-group"><br>
-              <label class="control-label">To Date</label> 
-              <input type="date" class="form-control1 ng-invalid ng-invalid-required ng-touched" id="demo" name="todate" required="">
-            </div>
-            <div class="form-group">
-              <label class="control-label">From Date</label>
-              <input type="date" class="form-control1 ng-invalid ng-valid-email ng-invalid-required ng-touched" id="demo1" name="fromdate" required="">
-            </div>
-            <div class="form-group">
-              <label class="control-label">Work Type</label>
-              <input type="text" class="form-control1 ng-invalid ng-invalid-required ng-touched" name="work" required="">
-            </div>
-         
-            <div class="form-group">
-              <button type="submit" name="btnsubmit" class="btn btn-primary">Submit
-              <!-- <input type="hidden" name ="idcp" value="<?php $row['wname'];?>"/> -->
-              </button>
-              <button type="reset" class="btn btn-default">Reset</button>
-            </div>
-          </fieldset>
-        </form>
-      </div>
     </div>
-    
-   </div>
-      </div>
-      <!-- /#page-wrapper -->
-   </div>
-    <!-- /#wrapper -->
-<!-- Nav CSS -->
-<link href="css/custom.css" rel="stylesheet">
-<!-- Metis Menu Plugin JavaScript -->
-<script src="js/metisMenu.min.js"></script>
-<script>
-  var date=new Date();
-  var tdate=date.getDate();
-  var month=date.getMonth() + 1;
-  if(tdate < 10)
-{
-  tdate='0'+tdate;
-} 
- if(month < 10)
-{
-  month='0' +month;
-}
-var year=date.getUTCFullYear();
-var minDate=year+"-"+month+"-"+tdate;
-document.getElementById("demo").setAttribute('min',minDate);
-document.getElementById("demo1").setAttribute('min',minDate);  
-</script>
-<script src="js/custom.js"></script>
-                </div>
              <!-- /. PAGE INNER  -->
             </div>
          <!-- /. PAGE WRAPPER  -->

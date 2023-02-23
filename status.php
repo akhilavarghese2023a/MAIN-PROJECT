@@ -1,20 +1,12 @@
-<?php
-     session_start();
-     include("../config.php");
-
-     if(isset($_SESSION['c_name']))
-     {
-                                      // echo 'inside';                          
-                            // echo '<a href="profile.php">'      
-                                          // echo '<h2> welcome'.$_SESSION['username'].'</h2>';
-                                  }
-    ?>
+<?php 
+include ('../config.php');
+?>
 <!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
       <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title> index</title>
+    <title>Admin Template : Binary Admin</title>
 	<!-- BOOTSTRAP STYLES-->
     <link href="assets/css/bootstrap.css" rel="stylesheet" />
      <!-- FONTAWESOME STYLES-->
@@ -25,6 +17,34 @@
     <link href="assets/css/custom.css" rel="stylesheet" />
      <!-- GOOGLE FONTS-->
    <link href='http://fonts.googleapis.com/css?family=Open+Sans' rel='stylesheet' type='text/css' />
+   <style>
+        #builder {
+        font-family: Arial, Helvetica, sans-serif;
+        border-collapse: collapse;
+        width: 100%;
+        }
+
+        #builder td, #builder th {
+        border: 1px solid #ddd;
+        padding: 8px;
+        }
+
+        /* #builder tr:nth-child(even){background-color: #f2f2f2;} */
+
+        #builder tr:hover {background-color: #ddd;}
+
+        #builder th {
+        padding-top: 12px;
+        padding-bottom: 12px;
+        text-align: left;
+        background-color: grey;
+        color: white;
+        }
+        /* th {
+  background-color: #04AA6D;
+  color: white;
+} */
+    </style>
 </head>
 <body>
     <div id="wrapper">
@@ -36,15 +56,15 @@
                     <span class="icon-bar"></span>
                     <span class="icon-bar"></span>
                 </button>
-                <a class="navbar-brand" href="index.html">DREAM HOME </a> 
+                <a class="navbar-brand" href="index.html">DREAM HOME</a> 
             </div>
   <div style="color: white;
 padding: 15px 50px 5px 50px;
 float: right;
-font-size: 16px;">  <?php
-                                                echo $_SESSION['c_name'];
-
-                      ?> <a href="../login/logout.php" class="btn btn-danger square-btn-adjust">Logout</a> </div>
+font-size: 16px;"> <?php
+session_start();
+    echo $_SESSION['c_name'];
+ ?> &nbsp; <a href="../login/logout.php" class="btn btn-danger square-btn-adjust">Logout</a> </div>
         </nav>   
            <!-- /. NAV TOP  -->
                 <nav class="navbar-default navbar-side" role="navigation">
@@ -55,6 +75,7 @@ font-size: 16px;">  <?php
 					</li>
 				
 					
+                  
                     <li>
                         <a  href="index.php"><i class="fa fa-home fa-3x"></i> Dashboard</a>
                     </li>
@@ -70,12 +91,12 @@ font-size: 16px;">  <?php
                     </li>	
                     
                     <li  >
-                        <a    href="#"><i class="fa fa-user fa-3x"></i>Leave Update</a>\ <ul class="nav nav-second-level">
+                        <a    href="#"><i class="fa fa-user fa-3x"></i>Leave Update</a> <ul class="nav nav-second-level">
                         <li>
                                 <a  href="viewleave.php">Approve Leave</a>
                             </li>
                              <li>
-                                <a href="lapproval.php">Pending</a>
+                                <a   href="lapproval.php">approved</a>
                             </li>
                             <li>
                                 <a href="lreject.php">reject</a>
@@ -89,10 +110,10 @@ font-size: 16px;">  <?php
                                 <a  href="viewreq.php">View Request</a>
                             </li>
                              <li>
-                                <a class="active-menu"  href="assignwc.php">assign workers</a>
+                                <a href="assignwc.php">assign workers</a>
                             </li>
                             <li>
-                                <a href="status.php">Approved /Rejected</a>
+                                <a class="active-menu" href="status.php">Approved /Rejected</a>
                             </li>
                             <li>
                                 <a href="lreject.php">pending projects</a>
@@ -101,9 +122,9 @@ font-size: 16px;">  <?php
                         
                       </li>  	
 					
+                      	
                       
-                      
-                  
+                   
                 </ul>
                
             </div>
@@ -114,50 +135,43 @@ font-size: 16px;">  <?php
             <div id="page-inner">
                 <div class="row">
                     <div class="col-md-12">
-                     <h2>Contractor Dashboard</h2>   
-                        <h5>Welcome  Contractor, Love to see you back. </h5>
+                     <h2>APPROVED WORKERS</h2>   
+                        <h5>Welcome Contractor , Love to see you back. </h5>
+                        <table class="table table-striped table-bordered table-hover" id="dataTables-example">
+                                    <thead>
+                                        <table id ="approve"  class="content-table">
+                                            <tr>
+                                            <th>User Name</th>
+                                                <th> Status</th>&nbsp;&nbsp;
+                                               <th>Request to contractor</th>
+                                               
+                                            </tr>
+                                            <?php 
+                                           $cname=$_SESSION['c_name'];
+                                           $query="SELECT * From bc_request WHERE `bcstatus` = 'approved'and cusername='$cname' ORDER BY `bcid` ASC";
+                                          $result=mysqli_query($conn,$query);
+                                          while($row = mysqli_fetch_array($result))
+                                          {
+                                          
+                                          ?>
+                                          
+                                              <tr>
+                                                  
+                                                  <td><?php echo $row['bid'];?></td>
+                                                  <td><?php echo $row['bcstatus'];?></td>
+   
+                                                  
+                                             <?php
+                                          }?>
+                                        
+                                   
+                                </table>
+                            </div>
+                        </div>
                     </div>
-                    <p style="color:white ;">Welcome</p>
-                </li>
-              
-              
-              </ul>
-              <?php
-                $cid=$_SESSION['cid'];
-
-               $query = "select * FROM worker where cid='$cid' ";
-               $result = mysqli_query($conn, $query);
-               ?>
-              <form action="" method="POST" class="list">
-        <div class="form-row"><label>select the worker type</label><br>
-            <div class="form-group col-md-15">
-                <select class="form-control" id="officer" name="officer">
-                    <option>-- select --</option>
-                        <?php
-                            while ($row = mysqli_fetch_assoc($result)) {
-                        ?>
-                    <option value="<?php echo $row['workertype']; ?>"><?php echo $row['workertype']; ?></option>
-                        <?php
-                        
-                            }
-                        ?>
-                </select>
-            </div><br>
-
-              <!-- <div class="col-md-12">
-													<div class="form-group d-flex align-items-center">
-												  		<label class="label" for="name">Worker Type &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</label>
-											  			<select name="workertype" class="form-control" id="workertype" required>
-														  <option value="" disabled selected>Select workers type</option>
-															<option value="Plumber">Plumber</option>
-															<option value="Electtrician">Electrician</option>
-															<option value="Painter">Painter</option>
-															<option value="Decorator">Decorator</option>
-															<option value="Labourer"> Labourer</option>
-
-											  			</select>
-										 			 </div> -->
-                 <!-- /. ROW  -->           
+              </div>
+    </div>  
+                 <!-- /. ROW  -->
     </div>
              <!-- /. PAGE INNER  -->
             </div>
