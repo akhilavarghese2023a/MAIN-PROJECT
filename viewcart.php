@@ -46,12 +46,11 @@ $rs= mysqli_query($conn,$sql);
 
       <nav id="navbar" class="navbar">
         <ul>
-        <li><a class="nav-link scrollto " href="index.php">Home</a></li>
-        <li><a class="nav-link scrollto active" href="profile.php">Profile</a></li>
+        <li><a class="nav-link scrollto " href="profile.php">Profile</a></li>
           <li><a class="nav-link scrollto" href="floorplan.php">FloorPlan</a></li>
           <li><a class="nav-link scrollto" href="changepass.php">Change Password</a></li>
           <!-- <li><a class="nav-link scrollto" href="floorplangen.php">Floor Plan Generator</a></li> -->
-          <!-- <li><a class="nav-link scrollto" href="cart.php">cart</a></li> -->
+          <!-- <li><a class="nav-link scrollto active" href="cart.php">cart</a></li> -->
           <li class="dropdown"><a href="#"><span>Builders</span> <i class="bi bi-chevron-right"></i></a>
                 <ul>
                   <li><a href="builders.php">Available Builders</a></li>
@@ -106,69 +105,59 @@ $rs= mysqli_query($conn,$sql);
       <div class="card-body">
       <div class="container">
   <div class="row">
-			<h1>Add To Cart </h1><hr>
-			<a href='viewcart.php'>View Cart</a>
-			<?php 
-			if(isset($_POST["addCart"])){
-				if(isset($_SESSION["cart"]))
+			<h1>Cart Items</h1><hr>
+			<a href='index.php'>Home</a>
+			<table class='table'>	
+				<tr>
+					<th>Item Name</th>
+					<th>Qty</th>
+					<th>Price</th>
+					<th>Total</th>
+					<th>Remove</th>
+				</tr>
+				<?php 
+				if(isset($_GET["del"]))
 				{
-					$pid_array=array_column($_SESSION["cart"],"pid");
-					if(!in_array($_GET["id"],$pid_array))
+					foreach($_SESSION["cart"] as $keys=>$values)
 					{
-						$index=count($_SESSION["cart"]);
-						$item=array(
-							'pid' => $_GET["id"],
-							'pname' => $_POST["pname"],
-							'price' => $_POST["price"],
-							'qty' => $_POST["qty"]
-						);
-						$_SESSION["cart"][$index]=$item;
-							echo "<script>alert('Product Added..');</script>";
-						header("location:viewCart.php");
-					}
-					else
-					{
-						echo "<script>alert('Already Added..');</script>";
+							if($values["pid"]==$_GET["del"])
+							{
+								unset($_SESSION["cart"][$keys]);
+							}
 					}
 				}
-				else
-				{
-						$item=array(
-							'pid' => $_GET["id"],
-							'pname' => $_POST["pname"],
-							'price' => $_POST["price"],
-							'qty' => $_POST["qty"]
-						);
-						$_SESSION["cart"][0]=$item;
-						echo "<script>alert('Product Added..');</script>";
-						header("location:viewCart.php");
-				}
-			}
+					if(!empty($_SESSION["cart"]))
+					{
+							$total=0;
+							foreach($_SESSION["cart"] as $keys=>$values)
+							{
+								$amt=$values["qty"]*$values["price"];
+									$total+=$amt;
+									echo "
+											<tr>
+												<td>{$values["pname"]}</td>
+												<td>{$values["qty"]}</td>
+												<td>{$values["price"]}</td>
+												<td>{$amt}</td>
+												<td><a href='viewCart.php?del={$values["pid"]}'>Remove</a></td>
+											</tr>
+									";
+									
+							}	
+								echo "
+											<tr>
+												<td></td>
+												<td></td>
+												<td></td>
+												<td>Total</td>
+												<td>{$total}</td>
+											</tr>";							
+							
+					}
+				?>
+			</table>
 			
-			$sql="select * from products where pid='{$_GET["id"]}'";
-			$res=$conn->query($sql);
-			if($res->num_rows>0)
-			{
-				echo '<form action="'.$_SERVER["REQUEST_URI"].'" method="post">';
-				if($row=$res->fetch_assoc())
-				{
-			echo  '
-   <div class="col-sm-4 col-lg-3 col-md-3 text-center">    
-   <img src="../A_adminn/msg_img/'. $row['image'] .'" alt="" class="img-responsive" >
-     <p><strong><a href="#">'. $row['pname'] .'</a></strong></p>
-     <h4 class="text-danger"> Rs.'. $row['price'] .'</h4>
-	<p><input type="number"  placeholder="Enter Qty" name="qty" min="1" max="15" class="form-control"></p>
-	<p><input type="hidden"  name="pname" value="'. $row['pname'] .'" class="form-control"></p>
-	<p><input type="hidden"  name="price" value="'. $row['price'] .'" class="form-control"></p>
-	<p><input type="submit" name="addCart" class="btn btn-success" value="Add to Cart"></p>
-   </div>
-   ';
-				}
-				echo '</form>';
-			}
-			?>
   </div>
-</div>
 
     <!-- ======= Blog Page ======= -->
     

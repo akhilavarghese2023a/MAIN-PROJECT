@@ -26,7 +26,6 @@ $rs= mysqli_query($conn,$sql);
   <link href="assets/vendor/swiper/swiper-bundle.min.css" rel="stylesheet">
   <link href="assets/css/style.css" rel="stylesheet">
   <style>
-  <style>
     #card{
       width="50%";
     }
@@ -39,19 +38,18 @@ $rs= mysqli_query($conn,$sql);
     <div class="container d-flex justify-content-between">
 
       <div class="logo">
-        <h1><a href="index.html"><span>e</span>Business</a></h1>
+        <h1><a href="index.html"><span>Dream</span>Home</a></h1>
         <!-- Uncomment below if you prefer to use an image logo -->
         <!-- <a href="index.html"><img src="assets/img/logo.png" alt="" class="img-fluid"></a>-->
       </div>
 
       <nav id="navbar" class="navbar">
         <ul>
-        <li><a class="nav-link scrollto " href="index.php">Home</a></li>
-        <li><a class="nav-link scrollto active" href="profile.php">Profile</a></li>
+        <li><a class="nav-link scrollto " href="profile.php">Profile</a></li>
           <li><a class="nav-link scrollto" href="floorplan.php">FloorPlan</a></li>
           <li><a class="nav-link scrollto" href="changepass.php">Change Password</a></li>
           <!-- <li><a class="nav-link scrollto" href="floorplangen.php">Floor Plan Generator</a></li> -->
-          <!-- <li><a class="nav-link scrollto" href="cart.php">cart</a></li> -->
+          <!-- <li><a class="nav-link scrollto active" href="cart.php">cart</a></li> -->
           <li class="dropdown"><a href="#"><span>Builders</span> <i class="bi bi-chevron-right"></i></a>
                 <ul>
                   <li><a href="builders.php">Available Builders</a></li>
@@ -92,7 +90,7 @@ $rs= mysqli_query($conn,$sql);
                   <h1 class="title2">Dream Home</h1>
                 </div>
                 <div class="layer3">
-                  <h2 class="title3">Available Workers</h2>
+                  <h2 class="title3">Cart</h2>
                 </div>
               </div>
             </div>
@@ -106,69 +104,33 @@ $rs= mysqli_query($conn,$sql);
       <div class="card-body">
       <div class="container">
   <div class="row">
-			<h1>Add To Cart </h1><hr>
-			<a href='viewcart.php'>View Cart</a>
+			<h1>Home Decors and Interiors</h1><hr>
 			<?php 
-			if(isset($_POST["addCart"])){
-				if(isset($_SESSION["cart"]))
-				{
-					$pid_array=array_column($_SESSION["cart"],"pid");
-					if(!in_array($_GET["id"],$pid_array))
-					{
-						$index=count($_SESSION["cart"]);
-						$item=array(
-							'pid' => $_GET["id"],
-							'pname' => $_POST["pname"],
-							'price' => $_POST["price"],
-							'qty' => $_POST["qty"]
-						);
-						$_SESSION["cart"][$index]=$item;
-							echo "<script>alert('Product Added..');</script>";
-						header("location:viewCart.php");
-					}
-					else
-					{
-						echo "<script>alert('Already Added..');</script>";
-					}
-				}
-				else
-				{
-						$item=array(
-							'pid' => $_GET["id"],
-							'pname' => $_POST["pname"],
-							'price' => $_POST["price"],
-							'qty' => $_POST["qty"]
-						);
-						$_SESSION["cart"][0]=$item;
-						echo "<script>alert('Product Added..');</script>";
-						header("location:viewCart.php");
-				}
-			}
-			
-			$sql="select * from products where pid='{$_GET["id"]}'";
+			$sql="select * from products";
 			$res=$conn->query($sql);
 			if($res->num_rows>0)
 			{
-				echo '<form action="'.$_SERVER["REQUEST_URI"].'" method="post">';
-				if($row=$res->fetch_assoc())
+				while($row=$res->fetch_assoc())
 				{
 			echo  '
-   <div class="col-sm-4 col-lg-3 col-md-3 text-center">    
-   <img src="../A_adminn/msg_img/'. $row['image'] .'" alt="" class="img-responsive" >
+   <div class="col-sm-4 col-lg-3 col-md-3 text-center">
+    
+     <img src="../A_adminn/msg_img/'. $row['image'] .'" alt="" class="img-responsive" style="width:200px;height:200px;" >
      <p><strong><a href="#">'. $row['pname'] .'</a></strong></p>
      <h4 class="text-danger"> Rs.'. $row['price'] .'</h4>
-	<p><input type="number"  placeholder="Enter Qty" name="qty" min="1" max="15" class="form-control"></p>
-	<p><input type="hidden"  name="pname" value="'. $row['pname'] .'" class="form-control"></p>
-	<p><input type="hidden"  name="price" value="'. $row['price'] .'" class="form-control"></p>
-	<p><input type="submit" name="addCart" class="btn btn-success" value="Add to Cart"></p>
+     <h6 class="text-danger"> '. $row['description'] .'</h6>
+	<p><a href="view.php?id='. $row['pid'] .'" class="btn btn-success">Add To Cart</a></p>
+
    </div>
    ';
 				}
-				echo '</form>';
 			}
 			?>
   </div>
 </div>
+
+      <div class="card-footer text-muted">      </div>
+    </div>
 
     <!-- ======= Blog Page ======= -->
     
